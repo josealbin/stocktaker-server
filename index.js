@@ -10,11 +10,12 @@ const productModel = require('./models/products')
 const customerModel = require('./models/customers')
 const userModel = require('./models/users')
 
-const app = express();
 dotenv.config({path: "./config/.env"})
 
+const app = express();
+
 app.use(cors({
-    origin: ["https://stocktaker-client.vercel.app"],
+    origin: ["https://stocktaker-client.vercel.app/"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
