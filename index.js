@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+import dotenv from 'dotenv'
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
@@ -15,9 +16,10 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
+dotenv.config({path: "./config/.env"})
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://josealbin:dars9252@stocktaker.lsqhay3.mongodb.net/stockTakerApp?retryWrites=true&w=majority&appName=stockTaker')
+mongoose.connect(process.env.URI)
 
 
 const storage = multer.diskStorage({
@@ -189,6 +191,6 @@ app.post('/login', async (req, res) => {
     return res.json({ status: true, message: "Logged In", token, username: user.username })
 })
 
-app.listen(3001, () => {
+app.listen(process.env.PORT, () => {
     console.log('Server Started');
 })
