@@ -1,6 +1,5 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const dotenv = require('dotenv');
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
@@ -10,21 +9,12 @@ const productModel = require('./models/products')
 const customerModel = require('./models/customers')
 const userModel = require('./models/users')
 
-dotenv.config({path: "./config/.env"})
-
 const app = express();
-
-app.use(cors({
-    origin: ["https://stocktaker-client.vercel.app/"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
-}));
-
+app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.URI, { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error(err));
+mongoose.connect('https://stocktaker-client.vercel.app/stocklist')
+
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) =>{
@@ -195,6 +185,6 @@ app.post('/login', async (req, res) => {
     return res.json({ status: true, message: "Logged In", token, username: user.username })
 })
 
-app.listen(process.env.PORT, () => {
+app.listen(3001, () => {
     console.log('Server Started');
 })
