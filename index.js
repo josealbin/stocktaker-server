@@ -17,7 +17,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-mongoose.connect('https://stocktaker-client.vercel.app/stocklist')
+mongoose.connect('https://stocktaker-client.vercel.app/stockTaker')
 
 
 const storage = multer.diskStorage({
