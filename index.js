@@ -17,7 +17,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-mongoose.connect('https://stocktaker-client.vercel.app/stockTaker')
+mongoose.connect('mongodb+srv://josealbin:dars9252@stocktaker.lsqhay3.mongodb.net/stockTaker?retryWrites=true&w=majority&appName=stockTaker')
 
 
 const storage = multer.diskStorage({
