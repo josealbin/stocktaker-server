@@ -10,7 +10,11 @@ const customerModel = require('./models/customers')
 const userModel = require('./models/users')
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: ["https://stocktaker-client.vercel.app/"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
 app.use(express.json());
 
 mongoose.connect('https://stocktaker-client.vercel.app/stocklist')
