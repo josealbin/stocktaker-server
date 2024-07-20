@@ -17,7 +17,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-mongoose.connect('mongodb://127.0.0.1:27017/stocklist')
+mongoose.connect('mongodb+srv://josealbin:dars9252@stocktaker.lsqhay3.mongodb.net/stockTakerApp?retryWrites=true&w=majority&appName=stockTaker')
 
 
 const storage = multer.diskStorage({
