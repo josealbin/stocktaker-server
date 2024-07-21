@@ -12,7 +12,7 @@ const userModel = require('./models/users')
 
 const app = express();
 app.use(cors({
-    origin: ["https://stocktaker-client.vercel.app"],
+    origin: ["https://stocktaker-client.vercel.app/"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
@@ -162,7 +162,7 @@ app.get('/getUsers', (req, res) => {
         .catch(err => res.json(err))
 })
 
-app.post('/api/signup', async (req, res) => {
+app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     const user = await userModel.findOne({ email })
     if (user) {
@@ -175,7 +175,7 @@ app.post('/api/signup', async (req, res) => {
     return res.json({ status: true, message: "User Added" })
 })
 
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email })
     if (!user) {
