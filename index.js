@@ -162,7 +162,7 @@ app.get('/getUsers', (req, res) => {
         .catch(err => res.json(err))
 })
 
-app.post('/signup', async (req, res) => {
+app.post('https://stocktaker-client.vercel.app/signup', async (req, res) => {
     const { username, email, password } = req.body;
     const user = await userModel.findOne({ email })
     if (user) {
