@@ -16,6 +16,12 @@ app.use(express.json());
 dotenv.config({path: "./config/.env"})
 
 app.use(cors());
+/* app.use(cors({
+    origin: ["https://stocktaker-client.vercel.app"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+})); */
 
 //mongoose.connect('mongodb://127.0.0.1:27017/stocklist')
 
