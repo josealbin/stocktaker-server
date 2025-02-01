@@ -12,14 +12,14 @@ import dotenv from 'dotenv'
 import './config/db.js'
 
 const app = express();
-dotenv.config({path: "./config/.env"})
+app.use(express.json());
 app.use(cors({
     origin: ["https://stocktaker-client.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"]
+    credentials: true
+    //allowedHeaders: ["Content-Type", "Authorization"]
 }));
-app.use(express.json());
+dotenv.config({path: "./config/.env"})
 
 //mongoose.connect('mongodb://127.0.0.1:27017/stocklist')
 
