@@ -16,7 +16,8 @@ dotenv.config({path: "./config/.env"})
 app.use(cors({
     origin: ["https://stocktaker-client.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
 
