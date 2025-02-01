@@ -151,7 +151,7 @@ app.post('/login', async (req, res) => {
         return res.json({ message: "Incorrect Password" })
     }
     
-    const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET_KEY);
     return res.json({ status: true, message: "Logged In", token, username: user.username })
 })
 
