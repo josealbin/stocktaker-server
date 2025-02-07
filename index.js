@@ -116,6 +116,15 @@ app.post('/updateData', async (req, res) => {
 });
 
 
+app.put('/resetOrders', async (req, res) => {
+    try {
+        await Product.updateMany({}, { $set: { order: 0 } });
+        res.json({ message: "All orders reset to zero" });
+    } catch (error) {
+        res.status(500).json({ error: "Error resetting orders" });
+    }
+});
+
 
 //---------------------------------------------------//
 //---------------------Users--------------------//
