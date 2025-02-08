@@ -101,7 +101,8 @@ app.post('/updateData', async (req, res) => {
                 update: {
                     $set: {
                         order: product.order,
-                        difference: product.stock - product.order
+                        difference: product.stock - product.order,
+                        stock: product.stock
                     }
                 }
             }
