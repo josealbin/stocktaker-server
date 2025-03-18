@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 import productModel from './models/products.js';
 import userModel from './models/users.js';
 import dotenv from 'dotenv'
-import authenticateUser from './middleware/auth.js';
+import authenticateUser from './middleware/auth.js'
 import './config/db.js'
 
 const app = express();
