@@ -20,7 +20,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
-
+app.set("trust proxy", 1);
 
 // Saving files for each items -- Not in use 
 const __filename = fileURLToPath(import.meta.url);
