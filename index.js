@@ -1,5 +1,4 @@
 import express from 'express';
-//import mongoose from 'mongoose';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -9,13 +8,12 @@ import { fileURLToPath } from 'url';
 import productModel from './models/products.js';
 import userModel from './models/users.js';
 import dotenv from 'dotenv'
+import authenticateUser from './middleware/auth.js';
 import './config/db.js'
 
 const app = express();
 app.use(express.json());
-dotenv.config({path: "./config/.env"})
-
-//app.use(cors());
+dotenv.config({ path: "./config/.env" })
 app.use(cors({
     origin: ["https://stocktaker-client.onrender.com"],
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -23,8 +21,8 @@ app.use(cors({
     credentials: true
 }));
 
-//mongoose.connect('mongodb://127.0.0.1:27017/stocklist')
 
+// Saving files for each items -- Not in use 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -45,45 +43,53 @@ const upload = multer({ storage })
 //---------------------Inventory---------------------//
 //-------------------------------------------------//
 
-app.get('/getProducts', (req, res) => {
-    productModel.find({})
+app.get('/getProducts', authenticateUser, (req, res) => {
+    productModel.find({ userId: req.user.id })
         .then(products => res.json(products))
         .catch(err => res.json(err))
 })
 
 // Add new Product record into database
-app.post('/addProduct', upload.single('file'), (req, res) => {
-    console.log(req.file);
-    const newProduct = req.body;
+app.post('/addProduct', authenticateUser, upload.single('file'), (req, res) => {
+    const newProduct = { ...req.body, userId: req.user.id };
     if (req.file) {
         newProduct.filePath = req.file.path; // Save the file path in the product data
-      }
+    }
     productModel.create(newProduct)
         .then(products => res.json(products))
-        .catch(err => res.json(err))
+        .catch(err => res.status(500).json({ message: err.message }))
 })
 
 // Get the Product by ID and Edit the product record
-app.get('/getProduct/:id', (req, res) => {
+app.get('/getProduct/:id', authenticateUser, (req, res) => {
     const id = req.params.id
-    productModel.findById({ _id: id })
-        .then(product => res.json(product))
-        .catch(err => res.json(err))
+    productModel.findOne({ _id: id, userId: req.user.id })
+        .then(product => {
+            if (!product) return res.status(404).json({ message: "Product not found" });
+            res.json(product);
+        })
+        .catch(err => res.status(500).json({ message: err.message }));
 })
-app.put('/updateProduct/:id', (req, res) => {
+app.put('/updateProduct/:id', authenticateUser, (req, res) => {
     const id = req.params.id
     const updatedData = req.body;
-    productModel.findByIdAndUpdate({ _id: id }, updatedData)
-        .then(product => res.json(product))
-        .catch(err => res.json(err))
-})
+    productModel.findOneAndUpdate({ _id: id, userId: req.user.id }, updatedData, { new: true })
+        .then(product => {
+            if (!product) return res.status(404).json({ message: "Product not found or not authorized" });
+            res.json(product)
+        })
+        .catch(err => res.status(500).json({ message: err.message }));
 
+})
 // Delete the Product
-app.delete('/deleteProduct/:id', (req, res) => {
+app.delete('/deleteProduct/:id', authenticateUser, (req, res) => {
     const id = req.params.id
-    productModel.findByIdAndDelete(id)
-        .then(products => res.json(products))
-        .catch(err => res.json)
+    productModel.findOneAndDelete({ _id: id, userId: req.user.id })
+        .then(product => {
+            if (!product) return res.status(404).json({ message: "Product not found or not authorized" });
+            res.json({ message: "Product deleted successfully" });
+        })
+        .catch(err => res.status(500).json({ message: err.message }));
 })
 
 
@@ -91,33 +97,28 @@ app.delete('/deleteProduct/:id', (req, res) => {
 //---------------------File Upload--------------------//
 //-------------------------------------------------//
 
-
-app.post('/updateData', async (req, res) => {
-    try {
-        const { updatedTableData } = req.body;
-        const bulkOps = updatedTableData.map(product => ({
-            updateOne: {
-                filter: { id: product.id },
-                update: {
-                    $set: {
-                        order: product.order,
-                        difference: product.stock - product.order,
-                        stock: product.stock - product.order
-                    }
+app.post('/updateData', authenticateUser, (req, res) => {
+    const { updatedTableData } = req.body;
+    const bulkOps = updatedTableData.map(product => ({
+        updateOne: {
+            filter: { id: product.id, userId: req.user.id },
+            update: {
+                $set: {
+                    order: product.order,
+                    difference: product.stock - product.order,
+                    stock: product.stock - product.order
                 }
             }
-        }));
-
-        await productModel.bulkWrite(bulkOps);
-        //const updatedProducts = await productModel.find({});
-        res.status(200).json({ message: 'Products updated successfully' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+        }
+    }));
+    productModel.bulkWrite(bulkOps)
+        .then(() => res.status(200).json({ message: 'Products updated successfully' }))
+        .catch(err => res.status(500).json({ message: err.message }));
 });
 
 
-app.put('/resetOrders', async (req, res) => {
+// needs to be fixed....
+app.put('/resetOrders', authenticateUser, async (req, res) => {
     try {
         await productModel.updateMany({}, { $set: { order: 0 } });
         res.json({ message: "All orders reset to zero" });
@@ -125,6 +126,7 @@ app.put('/resetOrders', async (req, res) => {
         res.status(500).json({ error: "Error resetting orders" });
     }
 });
+
 
 
 //---------------------------------------------------//
@@ -160,7 +162,7 @@ app.post('/login', async (req, res) => {
     if (!validPassword) {
         return res.json({ message: "Incorrect Password" })
     }
-    
+
     const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET_KEY);
     return res.json({ status: true, message: "Logged In", token, username: user.username })
 })
