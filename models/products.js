@@ -8,7 +8,8 @@ const productSchema = new mongoose.Schema({
     stock: Number,
     order: Number,
     difference: Number,
-    filePath: String
+    filePath: String,
+    userId: String
 })
 
 const productModel = mongoose.model('products', productSchema)
