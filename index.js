@@ -143,24 +143,24 @@ app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     const user = await userModel.findOne({ email })
     if (user) {
-        return res.json({ message: "User already existed" })
+        return res.json({ message: "User already existed!" })
     }
 
     const hashpassword = await bcrypt.hash(password, 10)
     const newUser = new userModel({ username, email, password: hashpassword })
     await newUser.save()
-    return res.json({ status: true, message: "User Added" })
+    return res.json({ status: true, message: "User Added!" })
 })
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email })
     if (!user) {
-        return res.json({ message: "User is not registered" })
+        return res.json({ message: "User is not registered!" })
     }
     const validPassword = await bcrypt.compare(password, user.password)
     if (!validPassword) {
-        return res.json({ message: "Incorrect Password" })
+        return res.json({ message: "Incorrect Password!" })
     }
 
     const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET_KEY);
