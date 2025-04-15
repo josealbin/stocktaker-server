@@ -18,7 +18,6 @@ app.use(cors({
     origin: ["https://stocktaker.net"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
 }));
 //app.set("trust proxy", 1);
 
