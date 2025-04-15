@@ -18,8 +18,9 @@ app.use(cors({
     origin: ["https://stocktaker.net"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
 }));
-//app.set("trust proxy", 1);
+app.set("trust proxy", 1);
 
 // Saving files for each items -- Not in use 
 const __filename = fileURLToPath(import.meta.url);
