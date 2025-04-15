@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 dotenv.config({ path: "./config/.env" })
 app.use(cors({
-    origin: ["https://stocktaker.net", "https://www.stocktaker.net"],
+    origin: ["https://stocktaker.net", "https://www.stocktaker.net", "https://api.stocktaker.net"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
