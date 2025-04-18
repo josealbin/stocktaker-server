@@ -167,6 +167,40 @@ app.post('/login', async (req, res) => {
     return res.json({ status: true, message: "Logged In", token, username: user.username })
 })
 
+
+//---------------------------------------------------//
+//---------------------Admin--------------------//
+//-------------------------------------------------//
+
+app.post('/admin-login', (req, res) => {
+    const { email, password } = req.body;
+  
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (email !== adminEmail) {
+      return res.status(401).json({ message: 'Invalid admin email' });
+    }
+  
+    if (password !== adminPassword) {
+      return res.status(401).json({ message: 'Incorrect admin password' });
+    }
+  
+    const token = jwt.sign(
+      { email, role: 'admin' },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: '1h' }
+    );
+  
+    return res.status(200).json({
+      status: true,
+      message: 'Admin logged in',
+      token,
+      username: 'admin'
+    });
+  });
+
+
 app.listen(process.env.PORT, () => {
     console.log('Server Started');
 })
