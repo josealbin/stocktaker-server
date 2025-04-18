@@ -186,18 +186,8 @@ app.post('/admin-login', (req, res) => {
       return res.status(401).json({ message: 'Incorrect admin password' });
     }
   
-    const token = jwt.sign(
-      { email, role: 'admin' },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: '1h' }
-    );
-  
-    return res.status(200).json({
-      status: true,
-      message: 'Admin logged in',
-      token,
-      username: 'admin'
-    });
+    const token = jwt.sign({ email, role: 'admin' }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+    return res.status(200).json({ status: true, message: 'Admin logged in', token, username: 'admin' });
   });
 
 
