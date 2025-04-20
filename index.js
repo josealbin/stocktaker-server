@@ -143,7 +143,7 @@ app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     const user = await userModel.findOne({ email })
     if (user) {
-        return res.json({ message: "User already existed!" })
+        return res.json({ message: "User already existed" })
     }
 
     const hashpassword = await bcrypt.hash(password, 10)
@@ -151,6 +151,7 @@ app.post('/signup', async (req, res) => {
     await newUser.save()
     return res.json({ status: true, message: "User Added!" })
 })
+
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
