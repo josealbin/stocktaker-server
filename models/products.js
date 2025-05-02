@@ -8,6 +8,8 @@ const productSchema = new mongoose.Schema({
     stock: Number,
     order: Number,
     difference: Number,
+    portions: Number,
+    price: Number,
     filePath: String,
     userId: String
 })
